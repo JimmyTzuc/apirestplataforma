@@ -15,10 +15,8 @@ services:
       - API_ENTRYPOINT=http://localhost:8000/graphql
     links:
       - postgres
-      - redis
     depends_on:
       - postgres
-      - redis
   postgres:
     image: postgres:11.2-alpine
     container_name: postgres
@@ -37,61 +35,5 @@ services:
       ADMINER_DEFAULT_SERVER: postgres
     ports:
       - 9000:8080
-  mailhog:
-    image: mailhog/mailhog
-    container_name: mailhog
-    restart: always
-    ports: 
-      - 1025:1025
-      - 8025:8025
-  redis:
-    hostname: redis
-    image: 'redis:alpine'
-    container_name: redis
-    ports:
-      - 6379:6379
-  rabbit:
-    container_name: rabbit
-    hostname: rabbit
-    image: rabbitmq:3.9.13-management-alpine
-    restart: always
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=rabbitsion
-    ports:
-      - 15672:15672
-      - 5672:5672
-
-  celery:
-    build:
-      context: ./core
-    container_name: celery
-    volumes:
-      - ./core:/core
-    working_dir: /core
-    command: celery -A core worker -l info --concurrency=10
-    environment:
-      - API_ENTRYPOINT=http://localhost:8000/graphql
-    links:
-      - core
-    depends_on:
-      - core
-  celery-beat:
-    build:
-      context: ./core
-    restart: on-failure
-    container_name: celery-beat
-    volumes:
-      - ./core:/core
-    working_dir: /core
-    command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    environment:
-      - API_ENTRYPOINT=http://localhost:8000/graphql
-    links:
-      - core
-    depends_on:
-      - core
-  
-
 volumes:
   pgdata:

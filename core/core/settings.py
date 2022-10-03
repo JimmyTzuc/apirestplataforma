@@ -29,17 +29,26 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
-INSTALLED_APPS = [
+BASE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'common.apps.CommonConfig',
-    'django_celery_beat',
+    
 ]
+
+LOCAL_APPS = [
+    'common.apps.CommonConfig',
+    'plataforma.apps.PlataformaConfig',
+]
+
+THIRD_APPS = [
+    'rest_framework'
+]
+
+INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -133,23 +142,3 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST = 'mailhog'
-EMAIL_PORT = 1025
-
-RABBIT_HOST = 'rabbit'
-RABBIT_PORT = 15672
-
-# CELERY_BROKER_URL = 'amqp://%s:%s' % (RABBIT_HOST, RABBIT_PORT)
-# CELERY_RESULT_BACKEND = 'amqp://%s:%s' % (RABBIT_HOST, RABBIT_PORT)
-
-CELERY_BROKER_URL = "amqp://admin:rabbitsion@rabbit:15672/"
-CELERY_RESULT_BACKEND = "amqp://admin:rabbitsion@rabbit:15672/"
-
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-CELERY_BEAT_SCHEDULER = {
-    
-}
